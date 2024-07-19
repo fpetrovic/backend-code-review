@@ -13,6 +13,7 @@ class MessageRepositoryTest extends KernelTestCase
     {
         self::bootKernel();
 
+        /** @var MessageRepository $messages */
         $messages = self::getContainer()->get(MessageRepository::class);
 
         $this->assertSame([], $messages->findAll());

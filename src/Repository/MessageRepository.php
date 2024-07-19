@@ -23,8 +23,8 @@ class MessageRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return array<array<{uuid: string, text: string, status: string}>>
-     * */
+     * @return array<int, array{uuid: string, text: string, status: string}>
+     **/
     public function by(?MessageStatus $status = null): array
     {
         $queryBuilder = $this->createQueryBuilder('m')
@@ -35,6 +35,9 @@ class MessageRepository extends ServiceEntityRepository
                 ->setParameter('status', $status);
         }
 
-        return $queryBuilder->getQuery()->getResult();
+        /** @var array<int, array{uuid: string, text: string, status: string}> $results */
+        $results = $queryBuilder->getQuery()->getResult();
+
+        return $results;
     }
 }

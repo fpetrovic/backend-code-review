@@ -8,12 +8,13 @@ use App\Entity\Message;
 use App\Message\SendMessage;
 use App\Message\SendMessageHandler;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class SendMessageHandlerTest extends KernelTestCase
 {
     private SendMessageHandler $sendMessageHandler;
-    private EntityManagerInterface $entityManager;
+    private MockObject $entityManager;
 
     protected function setUp(): void
     {

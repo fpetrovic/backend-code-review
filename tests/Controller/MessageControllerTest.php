@@ -17,8 +17,8 @@ class MessageControllerTest extends WebTestCase
 {
     use InteractsWithMessenger;
 
-    protected ?AbstractDatabaseTool $databaseTool = null;
-    protected ?KernelBrowser $client = null;
+    protected AbstractDatabaseTool $databaseTool;
+    protected KernelBrowser $client;
 
     protected function setUp(): void
     {
@@ -36,7 +36,11 @@ class MessageControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
 
         $response = $this->client->getResponse();
-        $decodedResponse = json_decode($response->getContent(), true);
+        /** @var string $encodedContent */
+        $encodedContent = $response->getContent();
+
+        /** @var array<string, array<int, array{uuid: string, text: string, status: string}>> $decodedResponse */
+        $decodedResponse = json_decode($encodedContent, true);
 
         $this->assertArrayHasKey('messages', $decodedResponse);
 
@@ -58,7 +62,12 @@ class MessageControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
 
         $response = $this->client->getResponse();
-        $decodedResponse = json_decode($response->getContent(), true);
+
+        /** @var string $encodedContent */
+        $encodedContent = $response->getContent();
+
+        /** @var array<string, array<int, array{uuid: string, text: string, status: string}>> $decodedResponse */
+        $decodedResponse = json_decode($encodedContent, true);
 
         $this->assertArrayHasKey('messages', $decodedResponse);
 
@@ -76,7 +85,12 @@ class MessageControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
 
         $response = $this->client->getResponse();
-        $decodedResponse = json_decode($response->getContent(), true);
+
+        /** @var string $encodedContent */
+        $encodedContent = $response->getContent();
+
+        /** @var array<string, array<int, array{uuid: string, text: string, status: string}>> $decodedResponse */
+        $decodedResponse = json_decode($encodedContent, true);
 
         $this->assertArrayHasKey('messages', $decodedResponse);
 
@@ -96,7 +110,10 @@ class MessageControllerTest extends WebTestCase
 
     public function testThatItSendsAMessage(): void
     {
-        $this->client->request('POST', '/messages/send', content: json_encode(['text' => 'Hello, World!']));
+        /** @var string $content */
+        $content = json_encode(['text' => 'Hello, World!']);
+
+        $this->client->request('POST', '/messages/send', content: $content);
 
         $this->assertResponseIsSuccessful();
         // This is using https://packagist.org/packages/zenstruck/messenger-test

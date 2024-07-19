@@ -6,3 +6,7 @@ parameters:
         - public/
         - src/
         - tests/
+    ignoreErrors:
+            - message: '#Call to an undefined method .*::get\(\)#'
+              paths:
+                  - tests/Controller/MessageControllerTest.php

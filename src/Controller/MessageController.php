@@ -57,7 +57,7 @@ class MessageController extends AbstractController
     ): JsonResponse {
         $text = $request->getPayload()->get('text');
 
-        if (!$text) {
+        if (!$text || !is_string($text)) {
             return new JsonResponse(['message' => 'Text is required'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
