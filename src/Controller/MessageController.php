@@ -58,11 +58,13 @@ class MessageController extends AbstractController
         $text = $request->getPayload()->get('text');
 
         if (!$text) {
-            return new JsonResponse(['message' => 'Text is required'], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['message' => 'Text is required'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $bus->dispatch(new SendMessage($text));
 
-        return new JsonResponse(['message' => 'Successfully sent'], Response::HTTP_OK);
+        /* Status code 202 because dispatch will be async on prod and this request does not know if new entity has been successfully created */
+        /* We can confirm with the new status in async handler and notify clients using mercure or SSE */
+        return new JsonResponse(['message' => 'Message has been sent'], Response::HTTP_ACCEPTED);
     }
 }

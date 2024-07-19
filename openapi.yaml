@@ -18,6 +18,8 @@ paths:
               - "sent"
               - "read"
       responses:
+        '400':
+          description: Invalid status value
         '200':
           description: Successful response
           content:
@@ -41,22 +43,32 @@ paths:
                             - "read"
               example:
                 messages:
-                  - text: "Hello, World!"
+                  - uuid: "123e4567-e89b-12d3-a456-426614174000"
+                    text: "Hello, World!"
                     status: "read"
-                  - text: "How are you today?"
+                  - uuid: "123e4567-e89b-12d3-a456-426614174001"
+                    text: "How are you today?"
                     status: "sent"
-                  - text: "Thanks, I'm fine. How about you?"
+                  - uuid: "123e4567-e89b-12d3-a456-426614174002"
+                    text: "Thanks, I'm fine. How about you?"
                     status: "sent"
   /messages/send:
-    get:
+    post:
       summary: Send a Message
-      parameters:
-        - name: text
-          in: query
-          description: The text you want to send
-          required: true
-          schema:
-            type: "string"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              properties:
+                text:
+                  type: "string"
+                  description: The text you want to send
+              required:
+                - text
       responses:
-        '204':
-          description: Successfully sent
+        '202':
+          description: Message has been sent
+        '422':
+          description: Request with invalid values
