@@ -14,7 +14,7 @@ use Symfony\Component\Uid\Uuid;
 /**
  * TODO: Cover with a test.
  */
-class SendMessageHandler
+readonly class SendMessageHandler
 {
     public function __construct(private EntityManagerInterface $manager)
     {
@@ -23,7 +23,7 @@ class SendMessageHandler
     public function __invoke(SendMessage $sendMessage): void
     {
         $message = new Message();
-        $message->setUuid(Uuid::v6()->toRfc4122());
+        $message->setUuid(Uuid::v6());
         $message->setText($sendMessage->text);
         $message->setStatus(MessageStatus::Sent);
         $message->setCreatedAt(new \DateTime());

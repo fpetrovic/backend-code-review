@@ -6,6 +6,7 @@ use App\Enum\MessageStatus;
 use App\Repository\MessageRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Uid\UuidV6;
 
 #[ORM\Entity(repositoryClass: MessageRepository::class)]
 /**
@@ -19,7 +20,7 @@ class Message
     private ?int $id = null;
 
     #[ORM\Column(type: Types::GUID)]
-    private ?string $uuid = null;
+    private ?UuidV6 $uuid = null;
 
     #[ORM\Column(length: 255)]
     private ?string $text = null;
@@ -28,19 +29,19 @@ class Message
     private ?MessageStatus $status = null;
 
     #[ORM\Column(type: 'datetime')]
-    private \DateTime $createdAt;
+    private \DateTimeInterface $createdAt;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getUuid(): ?string
+    public function getUuid(): ?UuidV6
     {
         return $this->uuid;
     }
 
-    public function setUuid(string $uuid): static
+    public function setUuid(UuidV6 $uuid): static
     {
         $this->uuid = $uuid;
 
@@ -64,19 +65,19 @@ class Message
         return $this->status;
     }
 
-    public function setStatus(?MessageStatus $status): static
+    public function setStatus(MessageStatus $status): static
     {
         $this->status = $status;
 
         return $this;
     }
 
-    public function getCreatedAt(): \DateTime
+    public function getCreatedAt(): \DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTime $createdAt): static
+    public function setCreatedAt(\DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
 
