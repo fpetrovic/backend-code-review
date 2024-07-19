@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
+use Symfony\Component\Messenger\Exception\ExceptionInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -46,17 +47,22 @@ class MessageController extends AbstractController
         ]);
     }
 
-    #[Route('/messages/send', methods: ['GET'])]
-    public function send(Request $request, MessageBusInterface $bus): Response
-    {
-        $text = $request->query->get('text');
+    /** Get method request with text query parameter can break the request url. Also, when logger captures problematic requests, text can leak to unauthorized 3rd parties.
+     * @throws ExceptionInterface
+     */
+    #[Route('/messages/send', methods: ['POST'])]
+    public function send(
+        Request $request,
+        MessageBusInterface $bus
+    ): JsonResponse {
+        $text = $request->getPayload()->get('text');
 
         if (!$text) {
-            return new Response('Text is required', 400);
+            return new JsonResponse(['message' => 'Text is required'], Response::HTTP_BAD_REQUEST);
         }
 
         $bus->dispatch(new SendMessage($text));
 
-        return new Response('Successfully sent', 204);
+        return new JsonResponse(['message' => 'Successfully sent'], Response::HTTP_OK);
     }
 }

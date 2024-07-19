@@ -53,7 +53,7 @@ class MessageControllerTest extends WebTestCase
 
     public function testListWithValidReadStatus(): void
     {
-        $this->client->request('GET', '/messages?status=read');
+        $this->client->request('GET', '/messages', ['status' => 'read']);
 
         $this->assertResponseIsSuccessful();
 
@@ -71,7 +71,7 @@ class MessageControllerTest extends WebTestCase
 
     public function testListWithValidSentStatus(): void
     {
-        $this->client->request('GET', '/messages?status=sent');
+        $this->client->request('GET', '/messages', ['status' => 'sent']);
 
         $this->assertResponseIsSuccessful();
 
@@ -89,16 +89,14 @@ class MessageControllerTest extends WebTestCase
 
     public function testListWithInvalidStatus(): void
     {
-        $this->client->request('GET', '/messages?status=invalid');
+        $this->client->request('GET', '/messages', ['status' => 'invalid-status']);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
     }
 
     public function testThatItSendsAMessage(): void
     {
-        $this->client->request('GET', '/messages/send', [
-            'text' => 'Hello World',
-        ]);
+        $this->client->request('POST', '/messages/send', content: json_encode(['text' => 'Hello, World!']));
 
         $this->assertResponseIsSuccessful();
         // This is using https://packagist.org/packages/zenstruck/messenger-test
