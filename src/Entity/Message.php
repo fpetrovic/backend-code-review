@@ -2,14 +2,14 @@
 
 namespace App\Entity;
 
+use App\Enum\MessageStatus;
 use App\Repository\MessageRepository;
-use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: MessageRepository::class)]
 /**
- * TODO: Review Message class
+ * TODO: Review Message class.
  */
 class Message
 {
@@ -24,11 +24,11 @@ class Message
     #[ORM\Column(length: 255)]
     private ?string $text = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $status = null;
-    
+    #[ORM\Column(type: 'string', nullable: true, enumType: MessageStatus::class)]
+    private ?MessageStatus $status = null;
+
     #[ORM\Column(type: 'datetime')]
-    private DateTime $createdAt;
+    private \DateTime $createdAt;
 
     public function getId(): ?int
     {
@@ -59,27 +59,27 @@ class Message
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): ?MessageStatus
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(?MessageStatus $status): static
     {
         $this->status = $status;
 
         return $this;
     }
 
-    public function getCreatedAt(): DateTime
+    public function getCreatedAt(): \DateTime
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(DateTime $createdAt): static
+    public function setCreatedAt(\DateTime $createdAt): static
     {
         $this->createdAt = $createdAt;
-        
+
         return $this;
     }
 }

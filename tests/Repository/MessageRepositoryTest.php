@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Repository;
@@ -8,12 +9,12 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class MessageRepositoryTest extends KernelTestCase
 {
-    public function test_it_has_connection(): void
+    public function testItHasConnection(): void
     {
         self::bootKernel();
-        
+
         $messages = self::getContainer()->get(MessageRepository::class);
-        
+
         $this->assertSame([], $messages->findAll());
     }
 }
