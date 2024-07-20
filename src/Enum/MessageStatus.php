@@ -4,6 +4,6 @@ namespace App\Enum;
 
 enum MessageStatus: string
 {
-    case Read = 'read';
-    case Sent = 'sent';
+    case READ = 'read';
+    case SENT = 'sent';
 }

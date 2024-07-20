@@ -25,7 +25,7 @@ readonly class SendMessageHandler
         $message = new Message();
         $message->setUuid(Uuid::v6());
         $message->setText($sendMessage->text);
-        $message->setStatus(MessageStatus::Sent);
+        $message->setStatus(MessageStatus::SENT);
         $message->setCreatedAt(new \DateTime());
 
         $this->manager->persist($message);
