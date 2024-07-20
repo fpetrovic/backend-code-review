@@ -27,27 +27,31 @@ class MessageController extends AbstractController
      * TODO: cover this method with tests, and refactor the code (including other files that need to be refactored).
      */
     #[Route('/messages')]
-    /** JsonResponse is more strict type hint for return type */
-    /** Variable name refactor is just my preference, but it's all matter of adopted standards on the project */
+    // JsonResponse is more strict type hint for return type
+    // Variable name refactor is just my preference, but it's all matter of adopted standards on the project
     public function list(
         MessageRepository $messageRepository,
-        /* new feature introduced in symfony 6.3 makes it easier to map query params */
-        /* Nicolas Grekas in 7.1.* added additional validationFailedStatusCode option, which is really nice for enums since url is actually correct, but request
-         * /** can not be comprehended by the server. Beside good practice, this is the reason why I updated symfony stack to 7.1.* */
+        /*
+         * New feature introduced in symfony 6.3 makes it easier to map query params.
+         * By default, failure status code was 404.
+         * Nicolas Grekas in 7.1.* added additional validationFailedStatusCode option, which is really nice for enums since url is actually correct, but request
+         * can not be comprehended by the server. Beside good practice, this is the reason why I updated symfony stack to 7.1.
+         */
         #[MapQueryParameter(validationFailedStatusCode: Response::HTTP_BAD_REQUEST)] ?MessageStatus $status = null
     ): JsonResponse {
         /** Unnecessary passing of entire request object. We should pass only what is going to be used. It will be more strict, stable, easier to test. */
         $messages = $messageRepository->by($status);
 
-        /* removed obsolete transformation to array, which should be done in repository or service layer depending on requirements */
+        // removed obsolete transformation to array, which should be done in repository or service layer depending on requirements
 
-        /* JsonResponse handles json responses, which was desired here, judging the previous version of return statement */
+        // JsonResponse handles json responses, which was desired here, judging the previous version of return statement
         return new JsonResponse([
             'messages' => $messages,
         ]);
     }
 
-    /** Get method request with text query parameter can break the request url. Also, when logger captures problematic requests, text can leak to unauthorized 3rd parties.
+    /**
+     * Get method request with text query parameter can break the request url. Also, when logger captures problematic requests, text can leak to unauthorized 3rd parties.
      * @throws ExceptionInterface
      */
     #[Route('/messages/send', methods: ['POST'])]
@@ -58,13 +62,13 @@ class MessageController extends AbstractController
         $text = $request->getPayload()->get('text');
 
         if (!$text || !is_string($text)) {
-            return new JsonResponse(['message' => 'Text is required'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return new JsonResponse(['message' => 'Text string is required'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $bus->dispatch(new SendMessage($text));
 
-        /* Status code 202 because dispatch will be async on prod and this request does not know if new entity has been successfully created */
-        /* We can confirm with the new status in async handler and notify clients using mercure or SSE */
+        // Status code 202 because dispatch will be async on prod and this request does not know if new entity has been successfully created
+        // We can confirm with the new status in async handler and notify clients using mercure or SSE
         return new JsonResponse(['message' => 'Message has been sent'], Response::HTTP_ACCEPTED);
     }
 }
